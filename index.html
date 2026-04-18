@@ -12,7 +12,7 @@
     <style>
         :root { --accent: #00d2ff; --bg: #050505; }
         html { scroll-behavior: smooth; cursor: none; background: var(--bg); }
-        body { font-family: 'Outfit', 'Cairo', sans-serif; color: white; overflow-x: hidden; }
+        body { font-family: 'Outfit', 'Cairo', sans-serif; color: white; overflow-x: hidden; width: 100%; }
 
         /* Cursor */
         #cursor { position: fixed; width: 8px; height: 8px; background: #fff; border-radius: 50%; pointer-events: none; z-index: 10000; }
@@ -24,7 +24,7 @@
 
         /* Hero */
         .brand-name {
-            font-size: clamp(6rem, 25vw, 20rem);
+            font-size: clamp(4rem, 20vw, 20rem);
             font-weight: 900; line-height: 0.8; letter-spacing: -0.05em;
             background: linear-gradient(to bottom, #fff 30%, #444 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
@@ -43,11 +43,11 @@
         #lightbox {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95);
             backdrop-filter: blur(20px); display: none;
-            justify-content: center; items-center; z-index: 20000;
+            justify-content: center; align-items: center; z-index: 20000;
         }
         #lightbox img { max-width: 85%; max-height: 85%; border-radius: 2rem; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
 
-        /* Glass Bento Refinement */
+        /* Glass Bento */
         .glass-bento {
             background: rgba(255, 255, 255, 0.01);
             backdrop-filter: blur(30px);
@@ -60,11 +60,9 @@
         .reveal { opacity: 0; transform: translateY(30px); transition: 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
-        /* Magnet Button Effect */
         .btn-portal { transition: all 0.3s ease; }
         .btn-portal:hover { transform: scale(1.05) rotate(2deg); background: var(--accent); color: white; border-color: transparent; }
 
-        /* CONTACT القسم السينمائي (الجديد) */
         .contact-overlay {
             position: fixed; inset: 0;
             background: radial-gradient(circle at 50% 50%, rgba(98, 0, 255, 0.06) 0%, transparent 70%);
@@ -72,7 +70,7 @@
         }
 
         .contact-heading {
-            font-size: clamp(4rem, 15vw, 12rem);
+            font-size: clamp(3rem, 15vw, 12rem);
             font-weight: 900; line-height: 0.8;
             letter-spacing: -0.05em;
             text-transform: uppercase;
@@ -80,8 +78,18 @@
             -webkit-text-stroke: 1px rgba(255,255,255,0.3);
             transition: all 0.5s ease;
         }
-        .contact-heading:hover { -webkit-text-stroke: 1px #fff; text-shadow: 0 0 50px rgba(255,255,255,0.2); }
 
+        /* Media Queries (تعديل الـ Responsive بدون حذف) */
+        @media (max-width: 768px) {
+            html { cursor: auto; }
+            #cursor, #cursor-follower { display: none; }
+            .hidden.md\:flex { display: none; }
+            .grid-cols-12 { display: flex; flex-direction: column; }
+            .md\:col-span-8, .md\:col-span-4 { width: 100%; }
+            .work-card.md\:mt-20 { margin-top: 0; }
+            .brand-name { font-size: 5rem; line-height: 1; }
+            .py-40 { padding-top: 5rem; padding-bottom: 5rem; }
+        }
     </style>
 </head>
 <body>
@@ -101,7 +109,7 @@
             <a href="#register" class="hover:text-white transition">Portal</a>
             <a href="#contact" class="hover:text-white transition text-cyan-500">Connect</a>
         </div>
-        <div class="text-[10px] font-black tracking-widest border-b border-white/20 pb-1EST. 2026">EST. 2026</div>
+        <div class="text-[10px] font-black tracking-widest border-b border-white/20 pb-1">EST. 2026</div>
     </nav>
 
     <section class="h-screen flex flex-col justify-center items-center text-center px-6">
@@ -117,7 +125,7 @@
                 <span class="text-cyan-500 font-bold tracking-widest text-xs mb-6 block animate-pulse">VISION & CRAFT</span>
                 <h3 class="text-4xl font-black mb-6 italic tracking-tight">إبداع بلا حدود.</h3>
                 <p class="text-gray-500 text-lg font-light leading-relaxed mb-8">
-                    أنا **ahmox**، مطور ويب شغوف بتحويل الأفكار المعقدة إلى واجهات رقمية بسيطة وجذابة. نهتم ببناء أنظمة وتصاميم تتخطى حدود المألوف، مع التركيز على الكود النظيف والتجربة البصرية المثالية.
+                    أنا **ahmox**، مطور ويب شغوف بتحويل الأفكار المعقدة إلى واجهات رقمية بسيطة وجذابة. نهتم ببناء أنظمة وتصاميم تتخطى حدود المألوف.
                 </p>
                 <div class="grid grid-cols-2 gap-8 pt-8 border-t border-white/5">
                     <div>
@@ -126,17 +134,17 @@
                     </div>
                     <div>
                         <h4 class="text-white font-bold mb-2">تطوير الويب</h4>
-                        <p class="text-gray-600 text-sm">كتابة كود نظيف، سريع، وقابل للتوسع.</p>
+                        <p class="text-gray-600 text-sm">كتابة كود نظيف وسريع.</p>
                     </div>
                 </div>
             </div>
             <div class="md:col-span-4 flex flex-col gap-6">
                 <div class="glass-bento rounded-[4rem] p-12 flex-1 flex flex-col justify-center items-center reveal">
-                    <div class="text-5xl text-cyan-500 mb-4 animate-spin-slow"><i class="fas fa-terminal"></i></div>
+                    <div class="text-5xl text-cyan-500 mb-4"><i class="fas fa-terminal"></i></div>
                     <span class="text-[10px] font-bold tracking-[0.3em] uppercase">Architecture</span>
                 </div>
                 <div class="glass-bento rounded-[4rem] p-12 flex-1 flex flex-col justify-center items-center reveal">
-                    <div class="text-5xl text-white mb-4 animate-bounce"><i class="fas fa-code-branch"></i></div>
+                    <div class="text-5xl text-white mb-4"><i class="fas fa-code-branch"></i></div>
                     <span class="text-[10px] font-bold tracking-[0.3em] uppercase">Modern Stack</span>
                 </div>
             </div>
@@ -146,26 +154,22 @@
     <section id="portfolio" class="py-40 px-6 bg-[#030303]">
         <div class="max-w-7xl mx-auto">
             <div class="mb-32 reveal flex justify-between items-end">
-                <div>
-                    <h2 class="text-7xl font-black tracking-tighter uppercase">Portfolio</h2>
-                    <div class="w-20 h-1 bg-cyan-500 mt-4"></div>
-                </div>
+                <h2 class="text-7xl font-black tracking-tighter uppercase">Portfolio</h2>
                 <p class="text-gray-700 font-bold text-xs tracking-widest pb-2">CLICK TO EXPAND</p>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 relative">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
                 <div class="work-card aspect-[16/11] reveal" onclick="openLightbox(this)">
-                    <img src="https://i.pinimg.com/736x/38/cf/9e/38cf9e60912a5e6fa50f8fc67c861ddc.jpg" alt="Squid game">
-                    <div class="absolute bottom-10 left-10">
-                        <h4 class="text-2xl font-black italic">Squid game</h4>
-                        <p class="text-gray-500 text-[10px] tracking-widest uppercase">Brand Identity</p>
+                    <img src="https://i.pinimg.com/736x/38/cf/9e/38cf9e60912a5e6fa50f8fc67c861ddc.jpg">
+                    <div class="absolute bottom-10 left-10 text-left">
+                        <h4 class="text-2xl font-black italic">Vencord Zenith</h4>
+                        <p class="text-gray-500 text-[10px] uppercase">Custom UI</p>
                     </div>
                 </div>
                 <div class="work-card aspect-[16/11] reveal md:mt-20" onclick="openLightbox(this)">
-                    <img src="https://i.pinimg.com/736x/3d/99/21/3d99210a80db9aeb2d02b4dd80f43919.jpg" alt="S'WATCH">
-                    <div class="absolute bottom-10 left-10">
-                        <h4 class="text-2xl font-black italic">S'WATCH</h4>
-                        <p class="text-gray-500 text-[10px] tracking-widest uppercase">Custom UI</p>
+                    <img src="https://i.pinimg.com/736x/3d/99/21/3d99210a80db9aeb2d02b4dd80f43919.jpg">
+                    <div class="absolute bottom-10 left-10 text-left">
+                        <h4 class="text-2xl font-black italic">Valorant Arabia</h4>
+                        <p class="text-gray-500 text-[10px] uppercase">Identity</p>
                     </div>
                 </div>
             </div>
@@ -179,9 +183,9 @@
                 <p class="text-[9px] text-gray-600 tracking-[0.5em] mt-2 uppercase">Sign-in to Ahmox Cloud</p>
             </div>
             <form class="space-y-4">
-                <input type="text" placeholder="ID" class="w-full bg-white/5 border border-white/10 rounded-2xl px-8 py-5 text-xs font-bold tracking-widest focus:border-cyan-500 outline-none transition portal-input">
-                <input type="password" placeholder="KEY" class="w-full bg-white/5 border border-white/10 rounded-2xl px-8 py-5 text-xs font-bold tracking-widest focus:border-cyan-500 outline-none transition portal-input">
-                <button class="w-full py-5 bg-white text-black font-black uppercase tracking-[0.4em] rounded-2xl hover:bg-cyan-500 hover:text-white transition duration-700 transform hover:scale-105 btn-portal">Access</button>
+                <input type="text" placeholder="ID" class="w-full bg-white/5 border border-white/10 rounded-2xl px-8 py-5 text-xs font-bold focus:border-cyan-500 outline-none transition">
+                <input type="password" placeholder="KEY" class="w-full bg-white/5 border border-white/10 rounded-2xl px-8 py-5 text-xs font-bold focus:border-cyan-500 outline-none transition">
+                <button class="w-full py-5 bg-white text-black font-black uppercase tracking-[0.4em] rounded-2xl hover:bg-cyan-500 hover:text-white transition duration-700 btn-portal">Access</button>
             </form>
         </div>
     </section>
@@ -189,31 +193,27 @@
     <section id="contact" class="py-60 px-6 relative border-t border-white/5">
         <div class="contact-overlay"></div>
         <div class="max-w-5xl mx-auto text-center reveal">
-            
             <span class="text-cyan-500 font-bold tracking-[1em] text-xs mb-8 block animate-pulse">CONNECT ARCHIVE</span>
             <h2 class="contact-heading mb-32">Ready to <br> Build <span class="text-blue-500">.</span></h2>
-            
             <div class="flex justify-center flex-wrap gap-12 mb-40">
-                <a href="https://wa.me/yournumber" target="_blank" class="w-24 h-24 glass-bento flex items-center justify-center rounded-[2rem] group transform transition hover:-translate-y-2">
-                    <i class="fab fa-whatsapp text-gray-600 group-hover:text-cyan-400 group-hover:scale-125 transition text-4xl"></i>
+                <a href="#" class="w-24 h-24 glass-bento flex items-center justify-center rounded-[2rem] group transition hover:-translate-y-2">
+                    <i class="fab fa-whatsapp text-gray-600 group-hover:text-cyan-400 transition text-4xl"></i>
                 </a>
-                <a href="https://discord.gg/discord-developers" target="_blank" class="w-24 h-24 glass-bento flex items-center justify-center rounded-[2rem] group transform transition hover:-translate-y-2">
-                    <i class="fab fa-discord text-gray-600 group-hover:text-cyan-400 group-hover:scale-125 transition text-4xl"></i>
+                <a href="#" class="w-24 h-24 glass-bento flex items-center justify-center rounded-[2rem] group transition hover:-translate-y-2">
+                    <i class="fab fa-discord text-gray-600 group-hover:text-cyan-400 transition text-4xl"></i>
                 </a>
-                <a href="https://github.com/Ahm0x" target="_blank" class="w-24 h-24 glass-bento flex items-center justify-center rounded-[2rem] group transform transition hover:-translate-y-2">
-                    <i class="fab fa-github text-gray-600 group-hover:text-cyan-400 group-hover:scale-125 transition text-4xl"></i>
+                <a href="#" class="w-24 h-24 glass-bento flex items-center justify-center rounded-[2rem] group transition hover:-translate-y-2">
+                    <i class="fab fa-github text-gray-600 group-hover:text-cyan-400 transition text-4xl"></i>
                 </a>
-                <a href="mailto:mesh.3awz@gmail.com" target="_blank" class="w-24 h-24 glass-bento flex items-center justify-center rounded-[2rem] group transform transition hover:-translate-y-2">
-                    <i class="fas fa-envelope text-gray-600 group-hover:text-cyan-400 group-hover:scale-125 transition text-4xl"></i>
+                <a href="#" class="w-24 h-24 glass-bento flex items-center justify-center rounded-[2rem] group transition hover:-translate-y-2">
+                    <i class="fas fa-envelope text-gray-600 group-hover:text-cyan-400 transition text-4xl"></i>
                 </a>
             </div>
-
-            <p class="text-gray-700 text-[10px] font-black tracking-[1.5em] uppercase reveal">Build. Design. Elevate.</p>
         </div>
     </section>
 
-    <footer class="py-12 text-center border-t border-white/5 opacity-10">
-        <p class="text-[9px] font-black tracking-[2em] uppercase">ahmox © 2026 // Visual Alchemy</p>
+    <footer class="py-12 text-center opacity-10">
+        <p class="text-[9px] font-black tracking-[2em] uppercase">ahmox © 2026</p>
     </footer>
 
     <script>
@@ -222,51 +222,116 @@
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
 
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-            
-            // المتابع يتحرك ببطء خلف الماوس
-            setTimeout(() => {
-                follower.style.left = e.clientX - 17 + 'px';
-                follower.style.top = e.clientY - 17 + 'px';
-            }, 60);
-        });
+        // Only for Desktop
+        if (window.innerWidth > 768) {
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+                setTimeout(() => {
+                    follower.style.left = e.clientX - 17 + 'px';
+                    follower.style.top = e.clientY - 17 + 'px';
+                }, 60);
+            });
+            document.querySelectorAll('.glass-bento, .work-card').forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width - 0.5;
+                    const y = (e.clientY - rect.top) / rect.height - 0.5;
+                    card.style.transform = `perspective(1000px) rotateX(${y * 7}deg) rotateY(${-x * 7}deg)`;
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
+                });
+            });
+        }
 
-        // Portfolio Lightbox
         function openLightbox(element) {
-            const imgSrc = element.querySelector('img').src;
-            lightboxImg.src = imgSrc;
+            lightboxImg.src = element.querySelector('img').src;
             lightbox.style.display = 'flex';
         }
+        function closeLightbox() { lightbox.style.display = 'none'; }
 
-        function closeLightbox() {
-            lightbox.style.display = 'none';
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+    <style>
+        :root { --accent: #898888; --bg: #050505; }
+
+        /* 1. السكرول الناعم وتثبيت الشاشة (Scroll Snap) */
+        html { 
+            scroll-behavior: smooth; 
+            background: var(--bg);
+            cursor: none; 
         }
 
-        // Scroll Reveal Logic
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
-            });
-        }, { threshold: 0.1 });
+        /* 2. تخصيص شكل السكرول بار (Custom Scrollbar) */
+        ::-webkit-scrollbar {
+            width: 5px; /* عرض نحيف جداً */
+        }
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
 
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-        
-        // تأثير الجاذبية على كروت الزجاج
-        document.querySelectorAll('.glass-bento, .work-card').forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = (e.clientX - rect.left) / rect.width - 0.5;
-                const y = (e.clientY - rect.top) / rect.height - 0.5;
-                card.style.transform = `perspective(1000px) rotateX(${y * 7}deg) rotateY(${-x * 7}deg)`;
-            });
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
-            });
-        });
-    </script>
+        /* تطبيق التثبيت على كل الأقسام */
+        section {
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+        }
+
+        body { 
+            font-family: 'Outfit', 'Cairo', sans-serif; 
+            color: white; 
+            overflow-x: hidden; 
+            width: 100%;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Cursor */
+        #cursor { position: fixed; width: 8px; height: 8px; background: #fff; border-radius: 50%; pointer-events: none; z-index: 10000; }
+        #cursor-follower {
+            position: fixed; width: 35px; height: 35px; border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50%; pointer-events: none; z-index: 9999;
+            transition: all 0.15s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        /* Hero & Portfolio Effects */
+        .brand-name {
+            font-size: clamp(4rem, 20vw, 20rem);
+            font-weight: 900; line-height: 0.8; letter-spacing: -0.05em;
+            background: linear-gradient(to bottom, #fff 30%, #444 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .work-card {
+            position: relative; border-radius: 3rem; overflow: hidden;
+            background: #0a0a0a; border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+            cursor: pointer;
+        }
+
+        .glass-bento {
+            background: rgba(255, 255, 255, 0.01);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Reveal Animation */
+        .reveal { opacity: 0; transform: translateY(30px); transition: 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* Mobile Fixes */
+        @media (max-width: 768px) {
+            html { cursor: auto; scroll-snap-type: none; } /* السكرول العادي أحسن للموبايل */
+            #cursor, #cursor-follower { display: none; }
+            .brand-name { font-size: 5rem; }
+        }
+    </style>
 </body>
 </html>
