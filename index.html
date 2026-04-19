@@ -10,328 +10,939 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;400;700;900&family=Montserrat:wght@900&family=Outfit:wght@100;400;900&display=swap" rel="stylesheet">
     
     <style>
-        :root { --accent: #00d2ff; --bg: #050505; }
-        html { scroll-behavior: smooth; cursor: none; background: var(--bg); }
-        body { font-family: 'Outfit', 'Cairo', sans-serif; color: white; overflow-x: hidden; width: 100%; }
-
-        /* Cursor */
-        #cursor { position: fixed; width: 8px; height: 8px; background: #fff; border-radius: 50%; pointer-events: none; z-index: 10000; }
-        #cursor-follower {
-            position: fixed; width: 35px; height: 35px; border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 50%; pointer-events: none; z-index: 9999;
-            transition: all 0.15s cubic-bezier(0.23, 1, 0.32, 1);
+        /* ===== THEME VARIABLES ===== */
+        :root {
+            --accent: #00d2ff;
+            --bg: #050505;
+            --bg2: #030303;
+            --text: #ffffff;
+            --text-muted: #6b7280;
+            --card-bg: rgba(255,255,255,0.01);
+            --card-border: rgba(255,255,255,0.03);
+            --card-border-hover: #00d2ff;
+            --input-bg: rgba(255,255,255,0.05);
+            --input-border: rgba(255,255,255,0.10);
+            --scrollbar-track: #000;
+            --scrollbar-thumb: #898888;
+            --brand-grad-start: #fff;
+            --brand-grad-end: #444;
+            --contact-stroke: rgba(255,255,255,0.3);
+            --nav-link-color: rgba(255,255,255,0.4);
+            --footer-text: rgba(255,255,255,1);
+            --work-card-bg: #0a0a0a;
+            --work-card-border: rgba(255,255,255,0.05);
         }
-
-        /* Hero */
+ 
+        html.light {
+            --accent: #0099cc;
+            --bg: #f0f0f0;
+            --bg2: #e8e8e8;
+            --text: #0a0a0a;
+            --text-muted: #555555;
+            --card-bg: rgba(0,0,0,0.02);
+            --card-border: rgba(0,0,0,0.06);
+            --card-border-hover: #0099cc;
+            --input-bg: rgba(0,0,0,0.04);
+            --input-border: rgba(0,0,0,0.12);
+            --scrollbar-track: #ddd;
+            --scrollbar-thumb: #999;
+            --brand-grad-start: #111;
+            --brand-grad-end: #888;
+            --contact-stroke: rgba(0,0,0,0.25);
+            --nav-link-color: rgba(0,0,0,0.45);
+            --footer-text: rgba(0,0,0,1);
+            --work-card-bg: #e0e0e0;
+            --work-card-border: rgba(0,0,0,0.08);
+        }
+ 
+        html {
+            scroll-behavior: smooth;
+            background: var(--bg);
+            cursor: none;
+        }
+ 
+        body {
+            font-family: 'Outfit', 'Cairo', sans-serif;
+            color: var(--text);
+            overflow-x: hidden;
+            width: 100%;
+            background: var(--bg);
+            transition: background 0.5s ease, color 0.5s ease;
+            -webkit-font-smoothing: antialiased;
+        }
+ 
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+        ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 10px; }
+ 
+        /* ===== CURSOR ===== */
+        *, *::before, *::after,
+        a, button, input, label, select, textarea,
+        [role="button"], [tabindex] {
+            cursor: none !important;
+        }
+        #cursor {
+            position: fixed; width: 10px; height: 10px;
+            background: var(--text); border-radius: 50%;
+            pointer-events: none; z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: background 0.3s, transform 0.1s;
+            top: 0; left: 0;
+        }
+        #cursor-follower {
+            position: fixed; width: 36px; height: 36px;
+            border: 1.5px solid var(--accent);
+            border-radius: 50%; pointer-events: none; z-index: 99998;
+            transform: translate(-50%, -50%);
+            transition: left 0.08s ease, top 0.08s ease, border-color 0.3s;
+            top: 0; left: 0;
+        }
+ 
+        /* ===== HERO ===== */
         .brand-name {
             font-size: clamp(4rem, 20vw, 20rem);
             font-weight: 900; line-height: 0.8; letter-spacing: -0.05em;
-            background: linear-gradient(to bottom, #fff 30%, #444 100%);
+            background: linear-gradient(to bottom, var(--brand-grad-start) 30%, var(--brand-grad-end) 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            transition: background 0.5s;
         }
-
-        /* Portfolio */
+ 
+        /* ===== PORTFOLIO CARDS ===== */
         .work-card {
             position: relative; border-radius: 3rem; overflow: hidden;
-            background: #0a0a0a; border: 1px solid rgba(255,255,255,0.05);
+            background: var(--work-card-bg); border: 1px solid var(--work-card-border);
             transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
             cursor: pointer;
         }
         .work-card img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) brightness(40%); transition: 1s ease; }
         .work-card:hover img { filter: grayscale(0%) brightness(70%); transform: scale(1.05); }
-        
+ 
+        html.light .work-card img { filter: grayscale(60%) brightness(80%); }
+        html.light .work-card:hover img { filter: grayscale(0%) brightness(95%); }
+ 
+        /* ===== LIGHTBOX ===== */
         #lightbox {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95);
             backdrop-filter: blur(20px); display: none;
             justify-content: center; align-items: center; z-index: 20000;
         }
         #lightbox img { max-width: 85%; max-height: 85%; border-radius: 2rem; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
-
-        /* Glass Bento */
+ 
+        /* ===== GLASS BENTO ===== */
         .glass-bento {
-            background: rgba(255, 255, 255, 0.01);
+            background: var(--card-bg);
             backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border);
             transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .glass-bento:hover { border-color: var(--accent); background: rgba(255,255,255,0.03); transform: scale(1.01); }
-
-        /* Reveal Logic */
+        .glass-bento:hover { border-color: var(--card-border-hover); background: var(--card-bg); transform: scale(1.01); }
+ 
+        /* ===== REVEAL ===== */
         .reveal { opacity: 0; transform: translateY(30px); transition: 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
         .reveal.active { opacity: 1; transform: translateY(0); }
-
-        .btn-portal { transition: all 0.3s ease; }
+ 
+        /* ===== BUTTON ===== */
+        .btn-portal { transition: all 0.3s ease; background: var(--text); color: var(--bg); }
         .btn-portal:hover { transform: scale(1.05) rotate(2deg); background: var(--accent); color: white; border-color: transparent; }
-
+ 
+        /* ===== CONTACT ===== */
         .contact-overlay {
             position: fixed; inset: 0;
             background: radial-gradient(circle at 50% 50%, rgba(98, 0, 255, 0.06) 0%, transparent 70%);
             pointer-events: none; z-index: -1;
         }
-
         .contact-heading {
             font-size: clamp(3rem, 15vw, 12rem);
-            font-weight: 900; line-height: 0.8;
-            letter-spacing: -0.05em;
+            font-weight: 900; line-height: 0.8; letter-spacing: -0.05em;
             text-transform: uppercase;
             color: transparent;
-            -webkit-text-stroke: 1px rgba(255,255,255,0.3);
+            -webkit-text-stroke: 1px var(--contact-stroke);
+            text-shadow:
+                0 0 20px rgba(255,255,255,0.08),
+                0 0 60px rgba(255,255,255,0.05),
+                0 0 120px rgba(255,255,255,0.03);
+            animation: soft-neon 4s ease-in-out infinite alternate;
             transition: all 0.5s ease;
         }
-
-        /* Media Queries (تعديل الـ Responsive بدون حذف) */
+ 
+        html.light .contact-heading {
+            text-shadow:
+                0 0 20px rgba(0,0,0,0.06),
+                0 0 60px rgba(0,0,0,0.03);
+        }
+ 
+        @keyframes soft-neon {
+            0%   { -webkit-text-stroke: 1px var(--contact-stroke); filter: brightness(0.85); }
+            100% { -webkit-text-stroke: 1px var(--contact-stroke); filter: brightness(1.3) drop-shadow(0 0 8px rgba(255,255,255,0.15)); }
+        }
+ 
+        html.light .contact-heading { animation: soft-neon-light 4s ease-in-out infinite alternate; }
+        @keyframes soft-neon-light {
+            0%   { filter: brightness(0.9); }
+            100% { filter: brightness(1.1) drop-shadow(0 0 6px rgba(0,0,0,0.1)); }
+        }
+ 
+        /* ===== NAV ===== */
+        nav a { color: var(--nav-link-color); transition: color 0.3s; }
+        nav a:hover { color: var(--text); }
+ 
+        /* ===== INPUTS ===== */
+        input {
+            background: var(--input-bg) !important;
+            border: 1px solid var(--input-border) !important;
+            color: var(--text) !important;
+        }
+        input:focus { border-color: var(--accent) !important; outline: none; }
+        input::placeholder { color: var(--text-muted); }
+ 
+        /* ===== SECTION BACKGROUNDS ===== */
+        section { scroll-snap-align: start; scroll-snap-stop: always; background: var(--bg); transition: background 0.5s ease; }
+        #portfolio { background: var(--bg2) !important; transition: background 0.5s; }
+ 
+        /* ===== THEME & LANG CONTROLS ===== */
+        .controls-bar {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9998;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(10,10,10,0.85);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 100px;
+            padding: 0.4rem 0.8rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+        html.light .controls-bar {
+            background: rgba(240,240,240,0.9);
+            border-color: rgba(0,0,0,0.15);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        }
+        .controls-bar:hover { border-color: var(--accent); }
+ 
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex; align-items: center; justify-content: center;
+            width: 36px; height: 36px;
+            border-radius: 50%; border: none; cursor: none !important;
+            background: transparent; color: var(--text);
+            font-size: 1rem; transition: all 0.3s;
+        }
+        .theme-toggle:hover { background: var(--accent); color: #fff; }
+ 
+        /* Lang dropdown */
+        .lang-btn {
+            display: flex; align-items: center; gap: 0.4rem;
+            padding: 0.3rem 0.75rem;
+            background: transparent; border: none; cursor: none !important;
+            color: var(--text); font-size: 0.65rem; font-weight: 700;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            border-radius: 100px; transition: all 0.3s;
+            font-family: 'Outfit', sans-serif;
+        }
+        .lang-btn:hover { background: var(--accent); color: #fff; }
+ 
+        .lang-dropdown {
+            position: absolute;
+            bottom: calc(100% + 0.75rem);
+            left: 50%; transform: translateX(-50%);
+            background: rgba(10,10,10,0.97);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 1.5rem;
+            padding: 0.5rem;
+            display: none;
+            flex-direction: column;
+            gap: 0.15rem;
+            min-width: 200px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            max-height: 280px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.1) transparent;
+        }
+        .lang-dropdown::-webkit-scrollbar { width: 3px; }
+        .lang-dropdown::-webkit-scrollbar-track { background: transparent; }
+        .lang-dropdown::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        html.light .lang-dropdown::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); }
+        html.light .lang-dropdown {
+            background: rgba(245,245,245,0.98);
+            border-color: rgba(0,0,0,0.1);
+            scrollbar-color: rgba(0,0,0,0.1) transparent;
+        }
+        .lang-dropdown.open { display: flex; }
+ 
+        .lang-option {
+            display: flex; align-items: center; gap: 0.6rem;
+            padding: 0.5rem 0.9rem;
+            border-radius: 1rem; cursor: none !important;
+            font-size: 0.75rem; font-weight: 600;
+            color: var(--text); transition: all 0.2s;
+            border: none; background: transparent;
+            font-family: 'Outfit', 'Cairo', sans-serif;
+            text-align: left;
+        }
+        .lang-option:hover { background: var(--accent); color: #fff; }
+        .lang-option.active { background: rgba(0,210,255,0.15); color: var(--accent); }
+        .lang-option .flag { font-size: 1.1rem; }
+ 
+        .divider {
+            width: 1px; height: 22px;
+            background: rgba(255,255,255,0.12);
+            margin: 0 0.15rem;
+        }
+        html.light .divider { background: rgba(0,0,0,0.12); }
+ 
+        /* ===== MOBILE ===== */
         @media (max-width: 768px) {
-            html { cursor: auto; }
-            #cursor, #cursor-follower { display: none; }
-            .hidden.md\:flex { display: none; }
-            .grid-cols-12 { display: flex; flex-direction: column; }
-            .md\:col-span-8, .md\:col-span-4 { width: 100%; }
-            .work-card.md\:mt-20 { margin-top: 0; }
+            * { cursor: auto !important; }
+            html { scroll-snap-type: none; }
+            #cursor, #cursor-follower { display: none !important; }
             .brand-name { font-size: 5rem; line-height: 1; }
             .py-40 { padding-top: 5rem; padding-bottom: 5rem; }
         }
     </style>
 </head>
 <body>
-
+ 
     <div id="cursor"></div>
     <div id="cursor-follower"></div>
-
+ 
     <div id="lightbox" onclick="closeLightbox()">
         <img id="lightbox-img" src="" alt="Zoomed Work">
     </div>
-
-    <nav class="fixed top-0 w-full z-[100] px-10 py-8 flex justify-between items-center mix-blend-difference reveal active">
-        <div class="text-2xl font-black tracking-tighter uppercase italic">ahmox<span class="text-cyan-500">.</span></div>
-        <div class="hidden md:flex gap-12 text-[10px] font-bold uppercase tracking-[0.5em] opacity-40">
-            <a href="#about" class="hover:text-white transition">About</a>
-            <a href="#portfolio" class="hover:text-white transition">Portfolio</a>
-            <a href="#register" class="hover:text-white transition">Portal</a>
-            <a href="#contact" class="hover:text-white transition text-cyan-500">Connect</a>
+ 
+    <!-- ===== CONTROLS BAR ===== -->
+    <div class="controls-bar" id="controlsBar">
+        <!-- Theme Toggle -->
+        <button class="theme-toggle" id="themeToggle" title="Toggle Theme" style="color:var(--text);">
+            <i class="fas fa-moon" id="themeIcon" style="font-size:1rem; color:inherit;"></i>
+        </button>
+ 
+        <div class="divider"></div>
+ 
+        <!-- Language Selector -->
+        <div style="position:relative;">
+            <button class="lang-btn" id="langBtn" style="color:var(--text);">
+                <i class="fas fa-globe" style="font-size:0.85rem; color:inherit;"></i>
+                <span id="currentLang" style="color:inherit;">AR</span>
+                <i class="fas fa-chevron-up" id="langChevron" style="font-size:0.55rem; opacity:0.6; color:inherit; transition: transform 0.3s;"></i>
+            </button>
+            <div class="lang-dropdown" id="langDropdown">
+                <button class="lang-option active" data-lang="ar" data-dir="rtl" data-code="AR">
+                    <span class="flag">🇸🇦</span> العربية
+                </button>
+                <button class="lang-option" data-lang="en" data-dir="ltr" data-code="EN">
+                    <span class="flag">🇺🇸</span> English
+                </button>
+                <button class="lang-option" data-lang="fr" data-dir="ltr" data-code="FR">
+                    <span class="flag">🇫🇷</span> Français
+                </button>
+                <button class="lang-option" data-lang="es" data-dir="ltr" data-code="ES">
+                    <span class="flag">🇪🇸</span> Español
+                </button>
+                <button class="lang-option" data-lang="de" data-dir="ltr" data-code="DE">
+                    <span class="flag">🇩🇪</span> Deutsch
+                </button>
+                <button class="lang-option" data-lang="ja" data-dir="ltr" data-code="JA">
+                    <span class="flag">🇯🇵</span> 日本語
+                </button>
+                <button class="lang-option" data-lang="zh" data-dir="ltr" data-code="ZH">
+                    <span class="flag">🇨🇳</span> 中文
+                </button>
+                <button class="lang-option" data-lang="ko" data-dir="ltr" data-code="KO">
+                    <span class="flag">🇰🇷</span> 한국어
+                </button>
+                <button class="lang-option" data-lang="tr" data-dir="ltr" data-code="TR">
+                    <span class="flag">🇹🇷</span> Türkçe
+                </button>
+                <button class="lang-option" data-lang="ru" data-dir="ltr" data-code="RU">
+                    <span class="flag">🇷🇺</span> Русский
+                </button>
+                <button class="lang-option" data-lang="pt" data-dir="ltr" data-code="PT">
+                    <span class="flag">🇧🇷</span> Português
+                </button>
+                <button class="lang-option" data-lang="it" data-dir="ltr" data-code="IT">
+                    <span class="flag">🇮🇹</span> Italiano
+                </button>
+            </div>
         </div>
-        <div class="text-[10px] font-black tracking-widest border-b border-white/20 pb-1">EST. 2026</div>
+    </div>
+ 
+    <!-- ===== NAV ===== -->
+    <nav class="fixed top-0 w-full z-[100] px-10 py-8 flex justify-between items-center reveal active">
+        <div class="text-2xl font-black tracking-tighter uppercase italic" style="color:var(--text);">
+            ahmox<span style="color:var(--accent);">.</span>
+        </div>
+        <div class="hidden md:flex gap-12 text-[10px] font-bold uppercase tracking-[0.5em]">
+            <a href="#about" data-i18n="nav_about">About</a>
+            <a href="#portfolio" data-i18n="nav_portfolio">Portfolio</a>
+            <a href="#register" data-i18n="nav_portal">Portal</a>
+            <a href="#contact" style="color:var(--accent);" data-i18n="nav_connect">Connect</a>
+        </div>
+        <div class="text-[10px] font-black tracking-widest pb-1" style="color:var(--text); border-bottom:1px solid var(--card-border);" data-i18n="nav_est">EST. 2026</div>
     </nav>
-
+ 
+    <!-- ===== HERO ===== -->
     <section class="h-screen flex flex-col justify-center items-center text-center px-6">
         <div class="reveal active">
             <h1 class="brand-name">AHMOX</h1>
-            <p class="text-gray-600 text-[11px] uppercase tracking-[1.5em] mt-8">Digital Architect & Developer</p>
+            <p class="text-[11px] uppercase tracking-[1.5em] mt-8" style="color:var(--text-muted);" data-i18n="hero_sub">Digital Architect & Developer</p>
         </div>
     </section>
-
+ 
+    <!-- ===== ABOUT ===== -->
     <section id="about" class="py-40 px-6 max-w-7xl mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
             <div class="md:col-span-8 glass-bento rounded-[4rem] p-16 reveal">
-                <span class="text-cyan-500 font-bold tracking-widest text-xs mb-6 block animate-pulse">VISION & CRAFT</span>
-                <h3 class="text-4xl font-black mb-6 italic tracking-tight">إبداع بلا حدود.</h3>
-                <p class="text-gray-500 text-lg font-light leading-relaxed mb-8">
-                    أنا **ahmox**، مطور ويب شغوف بتحويل الأفكار المعقدة إلى واجهات رقمية بسيطة وجذابة. نهتم ببناء أنظمة وتصاميم تتخطى حدود المألوف.
+                <span class="font-bold tracking-widest text-xs mb-6 block animate-pulse" style="color:var(--accent);" data-i18n="about_tag">VISION & CRAFT</span>
+                <h3 class="text-4xl font-black mb-6 italic tracking-tight" data-i18n="about_title">إبداع بلا حدود.</h3>
+                <p class="text-lg font-light leading-relaxed mb-8" style="color:var(--text-muted);" data-i18n="about_desc">
+                    أنا ahmox، مطور ويب شغوف بتحويل الأفكار المعقدة إلى واجهات رقمية بسيطة وجذابة.
                 </p>
-                <div class="grid grid-cols-2 gap-8 pt-8 border-t border-white/5">
+                <div class="grid grid-cols-2 gap-8 pt-8" style="border-top:1px solid var(--card-border);">
                     <div>
-                        <h4 class="text-white font-bold mb-2">التصميم البصري</h4>
-                        <p class="text-gray-600 text-sm">خلق هويات بصرية تعبر عن قوة البراند.</p>
+                        <h4 class="font-bold mb-2" style="color:var(--text);" data-i18n="skill1_title">التصميم البصري</h4>
+                        <p class="text-sm" style="color:var(--text-muted);" data-i18n="skill1_desc">خلق هويات بصرية تعبر عن قوة البراند.</p>
                     </div>
                     <div>
-                        <h4 class="text-white font-bold mb-2">تطوير الويب</h4>
-                        <p class="text-gray-600 text-sm">كتابة كود نظيف وسريع.</p>
+                        <h4 class="font-bold mb-2" style="color:var(--text);" data-i18n="skill2_title">تطوير الويب</h4>
+                        <p class="text-sm" style="color:var(--text-muted);" data-i18n="skill2_desc">كتابة كود نظيف وسريع.</p>
                     </div>
                 </div>
             </div>
             <div class="md:col-span-4 flex flex-col gap-6">
                 <div class="glass-bento rounded-[4rem] p-12 flex-1 flex flex-col justify-center items-center reveal">
-                    <div class="text-5xl text-cyan-500 mb-4"><i class="fas fa-terminal"></i></div>
-                    <span class="text-[10px] font-bold tracking-[0.3em] uppercase">Architecture</span>
+                    <div class="text-5xl mb-4" style="color:var(--accent);"><i class="fas fa-terminal"></i></div>
+                    <span class="text-[10px] font-bold tracking-[0.3em] uppercase" style="color:var(--text);">Architecture</span>
                 </div>
                 <div class="glass-bento rounded-[4rem] p-12 flex-1 flex flex-col justify-center items-center reveal">
-                    <div class="text-5xl text-white mb-4"><i class="fas fa-code-branch"></i></div>
-                    <span class="text-[10px] font-bold tracking-[0.3em] uppercase">Modern Stack</span>
+                    <div class="text-5xl mb-4" style="color:var(--text);"><i class="fas fa-code-branch"></i></div>
+                    <span class="text-[10px] font-bold tracking-[0.3em] uppercase" style="color:var(--text);">Modern Stack</span>
                 </div>
             </div>
         </div>
     </section>
-
-    <section id="portfolio" class="py-40 px-6 bg-[#030303]">
+ 
+    <!-- ===== PORTFOLIO ===== -->
+    <section id="portfolio" class="py-40 px-6">
         <div class="max-w-7xl mx-auto">
             <div class="mb-32 reveal flex justify-between items-end">
-                <h2 class="text-7xl font-black tracking-tighter uppercase">Portfolio</h2>
-                <p class="text-gray-700 font-bold text-xs tracking-widest pb-2">CLICK TO EXPAND</p>
+                <h2 class="text-7xl font-black tracking-tighter uppercase" style="color:var(--text);" data-i18n="portfolio_title">Portfolio</h2>
+                <p class="font-bold text-xs tracking-widest pb-2" style="color:var(--text-muted);" data-i18n="portfolio_expand">CLICK TO EXPAND</p>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
                 <div class="work-card aspect-[16/11] reveal" onclick="openLightbox(this)">
                     <img src="https://i.pinimg.com/736x/38/cf/9e/38cf9e60912a5e6fa50f8fc67c861ddc.jpg">
                     <div class="absolute bottom-10 left-10 text-left">
-                        <h4 class="text-2xl font-black italic">Vencord Zenith</h4>
-                        <p class="text-gray-500 text-[10px] uppercase">Custom UI</p>
+                        <h4 class="text-2xl font-black italic" style="color:var(--text);">Vencord Zenith</h4>
+                        <p class="text-[10px] uppercase" style="color:var(--text-muted);">Custom UI</p>
                     </div>
                 </div>
                 <div class="work-card aspect-[16/11] reveal md:mt-20" onclick="openLightbox(this)">
                     <img src="https://i.pinimg.com/736x/3d/99/21/3d99210a80db9aeb2d02b4dd80f43919.jpg">
                     <div class="absolute bottom-10 left-10 text-left">
-                        <h4 class="text-2xl font-black italic">Valorant Arabia</h4>
-                        <p class="text-gray-500 text-[10px] uppercase">Identity</p>
+                        <h4 class="text-2xl font-black italic" style="color:var(--text);">Valorant Arabia</h4>
+                        <p class="text-[10px] uppercase" style="color:var(--text-muted);">Identity</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-
+ 
+    <!-- ===== PORTAL ===== -->
     <section id="register" class="py-40 px-6">
         <div class="max-w-xl mx-auto glass-bento p-16 rounded-[4rem] reveal">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-black uppercase italic tracking-tighter">The Portal</h2>
-                <p class="text-[9px] text-gray-600 tracking-[0.5em] mt-2 uppercase">Sign-in to Ahmox Cloud</p>
+                <h2 class="text-3xl font-black uppercase italic tracking-tighter" style="color:var(--text);" data-i18n="portal_title">The Portal</h2>
+                <p class="text-[9px] tracking-[0.5em] mt-2 uppercase" style="color:var(--text-muted);" data-i18n="portal_sub">Sign-in to Ahmox Cloud</p>
             </div>
-            <form class="space-y-4">
-                <input type="text" placeholder="ID" class="w-full bg-white/5 border border-white/10 rounded-2xl px-8 py-5 text-xs font-bold focus:border-cyan-500 outline-none transition">
-                <input type="password" placeholder="KEY" class="w-full bg-white/5 border border-white/10 rounded-2xl px-8 py-5 text-xs font-bold focus:border-cyan-500 outline-none transition">
-                <button class="w-full py-5 bg-white text-black font-black uppercase tracking-[0.4em] rounded-2xl hover:bg-cyan-500 hover:text-white transition duration-700 btn-portal">Access</button>
+            <form class="space-y-4" onsubmit="return false;">
+                <input type="text" data-i18n-placeholder="portal_id" placeholder="ID" class="w-full rounded-2xl px-8 py-5 text-xs font-bold transition">
+                <input type="password" data-i18n-placeholder="portal_key" placeholder="KEY" class="w-full rounded-2xl px-8 py-5 text-xs font-bold transition">
+                <button class="w-full py-5 font-black uppercase tracking-[0.4em] rounded-2xl transition duration-700 btn-portal" data-i18n="portal_btn">Access</button>
             </form>
         </div>
     </section>
-
-    <section id="contact" class="py-60 px-6 relative border-t border-white/5">
+ 
+    <!-- ===== CONTACT ===== -->
+    <section id="contact" class="py-60 px-6 relative" style="border-top:1px solid var(--card-border);">
         <div class="contact-overlay"></div>
         <div class="max-w-5xl mx-auto text-center reveal">
-            <span class="text-cyan-500 font-bold tracking-[1em] text-xs mb-8 block animate-pulse">CONNECT ARCHIVE</span>
-            <h2 class="contact-heading mb-32">Ready to <br> Build <span class="text-blue-500">.</span></h2>
+            <span class="font-bold tracking-[1em] text-xs mb-8 block animate-pulse" style="color:var(--accent);" data-i18n="contact_tag">CONNECT ARCHIVE</span>
+            <h2 class="contact-heading mb-32" data-i18n="contact_heading">Ready to <br> Build <span style="color:#3b82f6;">.</span></h2>
             <div class="flex justify-center flex-wrap gap-12 mb-40">
                 <a href="https://web.whatsapp.com/" class="w-24 h-24 glass-bento flex items-center justify-center rounded-[2rem] group transition hover:-translate-y-2">
-                    <i class="fab fa-whatsapp text-gray-600 group-hover:text-cyan-400 transition text-4xl"></i>
+                    <i class="fab fa-whatsapp text-4xl transition" style="color:var(--text-muted);" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-muted)'"></i>
                 </a>
                 <a href="https://discord.gg/discord-developers" class="w-24 h-24 glass-bento flex items-center justify-center rounded-[2rem] group transition hover:-translate-y-2">
-                    <i class="fab fa-discord text-gray-600 group-hover:text-cyan-400 transition text-4xl"></i>
+                    <i class="fab fa-discord text-4xl transition" style="color:var(--text-muted);" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-muted)'"></i>
                 </a>
                 <a href="https://github.com/Ahm0x" class="w-24 h-24 glass-bento flex items-center justify-center rounded-[2rem] group transition hover:-translate-y-2">
-                    <i class="fab fa-github text-gray-600 group-hover:text-cyan-400 transition text-4xl"></i>
+                    <i class="fab fa-github text-4xl transition" style="color:var(--text-muted);" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-muted)'"></i>
                 </a>
                 <a href="mailto:mesh.3awz@gmail.com" class="w-24 h-24 glass-bento flex items-center justify-center rounded-[2rem] group transition hover:-translate-y-2">
-                    <i class="fas fa-envelope text-gray-600 group-hover:text-cyan-400 transition text-4xl"></i>
+                    <i class="fas fa-envelope text-4xl transition" style="color:var(--text-muted);" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-muted)'"></i>
                 </a>
             </div>
         </div>
     </section>
-
-    <footer class="py-12 text-center opacity-10">
-        <p class="text-[9px] font-black tracking-[2em] uppercase">ahmox © 2026</p>
+ 
+    <!-- ===== FOOTER ===== -->
+    <footer class="py-12 text-center" style="opacity:0.1;">
+        <p class="text-[9px] font-black tracking-[2em] uppercase" style="color:var(--footer-text);">ahmox © 2026</p>
     </footer>
-
+ 
     <script>
-        const cursor = document.getElementById('cursor');
-        const follower = document.getElementById('cursor-follower');
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightbox-img');
-
-        // Only for Desktop
-        if (window.innerWidth > 768) {
-            document.addEventListener('mousemove', (e) => {
-                cursor.style.left = e.clientX + 'px';
-                cursor.style.top = e.clientY + 'px';
-                setTimeout(() => {
-                    follower.style.left = e.clientX - 17 + 'px';
-                    follower.style.top = e.clientY - 17 + 'px';
-                }, 60);
-            });
-            document.querySelectorAll('.glass-bento, .work-card').forEach(card => {
-                card.addEventListener('mousemove', (e) => {
-                    const rect = card.getBoundingClientRect();
-                    const x = (e.clientX - rect.left) / rect.width - 0.5;
-                    const y = (e.clientY - rect.top) / rect.height - 0.5;
-                    card.style.transform = `perspective(1000px) rotateX(${y * 7}deg) rotateY(${-x * 7}deg)`;
-                });
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
-                });
-            });
+    // ===== TRANSLATIONS =====
+    const translations = {
+        ar: {
+            nav_about: 'من أنا',
+            nav_portfolio: 'أعمال',
+            nav_portal: 'بوابة',
+            nav_connect: 'تواصل',
+            nav_est: 'تأسس ٢٠٢٦',
+            hero_sub: 'مطور ومصمم رقمي',
+            about_tag: 'الرؤية والإتقان',
+            about_title: 'إبداع بلا حدود.',
+            about_desc: 'أنا ahmox، مطور ويب شغوف بتحويل الأفكار المعقدة إلى واجهات رقمية بسيطة وجذابة.',
+            skill1_title: 'التصميم البصري',
+            skill1_desc: 'خلق هويات بصرية تعبر عن قوة البراند.',
+            skill2_title: 'تطوير الويب',
+            skill2_desc: 'كتابة كود نظيف وسريع.',
+            portfolio_title: 'أعمالي',
+            portfolio_expand: 'انقر للتوسيع',
+            portal_title: 'البوابة',
+            portal_sub: 'سجل دخولك إلى Ahmox Cloud',
+            portal_id: 'المعرّف',
+            portal_key: 'المفتاح',
+            portal_btn: 'دخول',
+            contact_tag: 'أرشيف التواصل',
+            contact_heading: 'مستعد للبناء<br>معاً <span style="color:#3b82f6;">.</span>',
+        },
+        en: {
+            nav_about: 'About',
+            nav_portfolio: 'Portfolio',
+            nav_portal: 'Portal',
+            nav_connect: 'Connect',
+            nav_est: 'EST. 2026',
+            hero_sub: 'Digital Architect & Developer',
+            about_tag: 'VISION & CRAFT',
+            about_title: 'Creativity Without Limits.',
+            about_desc: 'I\'m ahmox, a passionate web developer turning complex ideas into simple, stunning digital interfaces.',
+            skill1_title: 'Visual Design',
+            skill1_desc: 'Creating visual identities that express brand power.',
+            skill2_title: 'Web Development',
+            skill2_desc: 'Writing clean and fast code.',
+            portfolio_title: 'Portfolio',
+            portfolio_expand: 'CLICK TO EXPAND',
+            portal_title: 'The Portal',
+            portal_sub: 'Sign-in to Ahmox Cloud',
+            portal_id: 'ID',
+            portal_key: 'KEY',
+            portal_btn: 'Access',
+            contact_tag: 'CONNECT ARCHIVE',
+            contact_heading: 'Ready to<br>Build <span style="color:#3b82f6;">.</span>',
+        },
+        fr: {
+            nav_about: 'À Propos',
+            nav_portfolio: 'Portfolio',
+            nav_portal: 'Portail',
+            nav_connect: 'Contact',
+            nav_est: 'EST. 2026',
+            hero_sub: 'Architecte & Développeur Digital',
+            about_tag: 'VISION & MAÎTRISE',
+            about_title: 'Créativité sans limites.',
+            about_desc: 'Je suis ahmox, développeur web passionné par la transformation d\'idées complexes en interfaces numériques simples et attrayantes.',
+            skill1_title: 'Design Visuel',
+            skill1_desc: 'Créer des identités visuelles qui expriment la puissance de la marque.',
+            skill2_title: 'Développement Web',
+            skill2_desc: 'Écrire du code propre et rapide.',
+            portfolio_title: 'Portfolio',
+            portfolio_expand: 'CLIQUER POUR AGRANDIR',
+            portal_title: 'Le Portail',
+            portal_sub: 'Connectez-vous à Ahmox Cloud',
+            portal_id: 'IDENTIFIANT',
+            portal_key: 'CLÉ',
+            portal_btn: 'Accéder',
+            contact_tag: 'ARCHIVE DE CONTACT',
+            contact_heading: 'Prêt à<br>Construire <span style="color:#3b82f6;">.</span>',
+        },
+        es: {
+            nav_about: 'Sobre mí',
+            nav_portfolio: 'Portafolio',
+            nav_portal: 'Portal',
+            nav_connect: 'Contacto',
+            nav_est: 'EST. 2026',
+            hero_sub: 'Arquitecto Digital & Desarrollador',
+            about_tag: 'VISIÓN Y OFICIO',
+            about_title: 'Creatividad sin límites.',
+            about_desc: 'Soy ahmox, desarrollador web apasionado por convertir ideas complejas en interfaces digitales simples y atractivas.',
+            skill1_title: 'Diseño Visual',
+            skill1_desc: 'Crear identidades visuales que expresen el poder de la marca.',
+            skill2_title: 'Desarrollo Web',
+            skill2_desc: 'Escribir código limpio y rápido.',
+            portfolio_title: 'Portafolio',
+            portfolio_expand: 'CLIC PARA AMPLIAR',
+            portal_title: 'El Portal',
+            portal_sub: 'Inicia sesión en Ahmox Cloud',
+            portal_id: 'ID',
+            portal_key: 'CLAVE',
+            portal_btn: 'Acceder',
+            contact_tag: 'ARCHIVO DE CONTACTO',
+            contact_heading: 'Listo para<br>Construir <span style="color:#3b82f6;">.</span>',
+        },
+        de: {
+            nav_about: 'Über mich',
+            nav_portfolio: 'Portfolio',
+            nav_portal: 'Portal',
+            nav_connect: 'Kontakt',
+            nav_est: 'GEGR. 2026',
+            hero_sub: 'Digitaler Architekt & Entwickler',
+            about_tag: 'VISION & KÖNNEN',
+            about_title: 'Kreativität ohne Grenzen.',
+            about_desc: 'Ich bin ahmox, ein leidenschaftlicher Webentwickler, der komplexe Ideen in einfache, ansprechende digitale Interfaces umwandelt.',
+            skill1_title: 'Visuelles Design',
+            skill1_desc: 'Visuelle Identitäten schaffen, die Markenstärke ausdrücken.',
+            skill2_title: 'Webentwicklung',
+            skill2_desc: 'Sauberen und schnellen Code schreiben.',
+            portfolio_title: 'Portfolio',
+            portfolio_expand: 'ZUM VERGRÖßERN KLICKEN',
+            portal_title: 'Das Portal',
+            portal_sub: 'Anmeldung bei Ahmox Cloud',
+            portal_id: 'BENUTZER',
+            portal_key: 'SCHLÜSSEL',
+            portal_btn: 'Zugang',
+            contact_tag: 'KONTAKT ARCHIV',
+            contact_heading: 'Bereit zum<br>Bauen <span style="color:#3b82f6;">.</span>',
+        },
+        ja: {
+            nav_about: '私について',
+            nav_portfolio: '作品集',
+            nav_portal: 'ポータル',
+            nav_connect: 'コンタクト',
+            nav_est: '2026年設立',
+            hero_sub: 'デジタルアーキテクト & 開発者',
+            about_tag: 'ビジョンと技術',
+            about_title: '無限の創造力。',
+            about_desc: '私はahmox、複雑なアイデアをシンプルで魅力的なデジタルインターフェースに変えることに情熱を持つウェブ開発者です。',
+            skill1_title: 'ビジュアルデザイン',
+            skill1_desc: 'ブランドの力を表現するビジュアルアイデンティティを作成。',
+            skill2_title: 'ウェブ開発',
+            skill2_desc: 'クリーンで高速なコードを記述。',
+            portfolio_title: '作品集',
+            portfolio_expand: 'クリックして拡大',
+            portal_title: 'ポータル',
+            portal_sub: 'Ahmox Cloudにサインイン',
+            portal_id: 'ID',
+            portal_key: 'キー',
+            portal_btn: 'アクセス',
+            contact_tag: 'コンタクトアーカイブ',
+            contact_heading: '構築する<br>準備完了 <span style="color:#3b82f6;">.</span>',
+        },
+        zh: {
+            nav_about: '关于我',
+            nav_portfolio: '作品集',
+            nav_portal: '入口',
+            nav_connect: '联系',
+            nav_est: '2026年成立',
+            hero_sub: '数字架构师 & 开发者',
+            about_tag: '愿景与技艺',
+            about_title: '无限创意。',
+            about_desc: '我是ahmox，一位热衷于将复杂想法转化为简洁、吸引人的数字界面的网页开发者。',
+            skill1_title: '视觉设计',
+            skill1_desc: '创造表达品牌力量的视觉标识。',
+            skill2_title: '网页开发',
+            skill2_desc: '编写简洁快速的代码。',
+            portfolio_title: '作品集',
+            portfolio_expand: '点击放大',
+            portal_title: '入口',
+            portal_sub: '登录 Ahmox Cloud',
+            portal_id: '账号',
+            portal_key: '密钥',
+            portal_btn: '进入',
+            contact_tag: '联系档案',
+            contact_heading: '准备好<br>开始构建 <span style="color:#3b82f6;">.</span>',
+        },
+        ko: {
+            nav_about: '소개',
+            nav_portfolio: '포트폴리오',
+            nav_portal: '포털',
+            nav_connect: '연락처',
+            nav_est: '2026년 설립',
+            hero_sub: '디지털 아키텍트 & 개발자',
+            about_tag: '비전과 기술',
+            about_title: '한계 없는 창의성.',
+            about_desc: '저는 ahmox입니다. 복잡한 아이디어를 단순하고 매력적인 디지털 인터페이스로 전환하는 열정적인 웹 개발자입니다.',
+            skill1_title: '비주얼 디자인',
+            skill1_desc: '브랜드 파워를 표현하는 시각적 정체성 창조.',
+            skill2_title: '웹 개발',
+            skill2_desc: '깔끔하고 빠른 코드 작성.',
+            portfolio_title: '포트폴리오',
+            portfolio_expand: '클릭하여 확대',
+            portal_title: '포털',
+            portal_sub: 'Ahmox Cloud 로그인',
+            portal_id: '아이디',
+            portal_key: '키',
+            portal_btn: '접근',
+            contact_tag: '연락처 아카이브',
+            contact_heading: '빌드할<br>준비 완료 <span style="color:#3b82f6;">.</span>',
+        },
+        tr: {
+            nav_about: 'Hakkımda',
+            nav_portfolio: 'Portföy',
+            nav_portal: 'Portal',
+            nav_connect: 'İletişim',
+            nav_est: 'KURULUŞ 2026',
+            hero_sub: 'Dijital Mimar & Geliştirici',
+            about_tag: 'VİZYON & USTALLIK',
+            about_title: 'Sınırsız Yaratıcılık.',
+            about_desc: 'Ben ahmox, karmaşık fikirleri basit ve çekici dijital arayüzlere dönüştürme konusunda tutkulu bir web geliştiricisiyim.',
+            skill1_title: 'Görsel Tasarım',
+            skill1_desc: 'Marka gücünü ifade eden görsel kimlikler oluşturma.',
+            skill2_title: 'Web Geliştirme',
+            skill2_desc: 'Temiz ve hızlı kod yazma.',
+            portfolio_title: 'Portföy',
+            portfolio_expand: 'GENİŞLETMEK İÇİN TIKLA',
+            portal_title: 'Portal',
+            portal_sub: 'Ahmox Cloud\'a Giriş Yap',
+            portal_id: 'KİMLİK',
+            portal_key: 'ANAHTAR',
+            portal_btn: 'Erişim',
+            contact_tag: 'İLETİŞİM ARŞİVİ',
+            contact_heading: 'İnşa Etmeye<br>Hazır <span style="color:#3b82f6;">.</span>',
+        },
+        ru: {
+            nav_about: 'Обо мне',
+            nav_portfolio: 'Портфолио',
+            nav_portal: 'Портал',
+            nav_connect: 'Контакт',
+            nav_est: 'ОСНОВАН 2026',
+            hero_sub: 'Цифровой Архитектор & Разработчик',
+            about_tag: 'ВИДЕНИЕ И МАСТЕРСТВО',
+            about_title: 'Творчество без границ.',
+            about_desc: 'Я ahmox, веб-разработчик, увлечённый превращением сложных идей в простые и привлекательные цифровые интерфейсы.',
+            skill1_title: 'Визуальный дизайн',
+            skill1_desc: 'Создание визуальных идентификаторов, выражающих силу бренда.',
+            skill2_title: 'Веб-разработка',
+            skill2_desc: 'Написание чистого и быстрого кода.',
+            portfolio_title: 'Портфолио',
+            portfolio_expand: 'НАЖМИТЕ ДЛЯ УВЕЛИЧЕНИЯ',
+            portal_title: 'Портал',
+            portal_sub: 'Войдите в Ahmox Cloud',
+            portal_id: 'ID',
+            portal_key: 'КЛЮЧ',
+            portal_btn: 'Войти',
+            contact_tag: 'АРХИВ КОНТАКТОВ',
+            contact_heading: 'Готов к<br>Созданию <span style="color:#3b82f6;">.</span>',
+        },
+        pt: {
+            nav_about: 'Sobre',
+            nav_portfolio: 'Portfólio',
+            nav_portal: 'Portal',
+            nav_connect: 'Contato',
+            nav_est: 'FUND. 2026',
+            hero_sub: 'Arquiteto Digital & Desenvolvedor',
+            about_tag: 'VISÃO & HABILIDADE',
+            about_title: 'Criatividade sem limites.',
+            about_desc: 'Sou ahmox, desenvolvedor web apaixonado por transformar ideias complexas em interfaces digitais simples e atraentes.',
+            skill1_title: 'Design Visual',
+            skill1_desc: 'Criar identidades visuais que expressem o poder da marca.',
+            skill2_title: 'Desenvolvimento Web',
+            skill2_desc: 'Escrever código limpo e rápido.',
+            portfolio_title: 'Portfólio',
+            portfolio_expand: 'CLIQUE PARA EXPANDIR',
+            portal_title: 'O Portal',
+            portal_sub: 'Entre no Ahmox Cloud',
+            portal_id: 'ID',
+            portal_key: 'CHAVE',
+            portal_btn: 'Acessar',
+            contact_tag: 'ARQUIVO DE CONTATO',
+            contact_heading: 'Pronto para<br>Construir <span style="color:#3b82f6;">.</span>',
+        },
+        it: {
+            nav_about: 'Chi sono',
+            nav_portfolio: 'Portfolio',
+            nav_portal: 'Portale',
+            nav_connect: 'Contatto',
+            nav_est: 'FOND. 2026',
+            hero_sub: 'Architetto Digitale & Sviluppatore',
+            about_tag: 'VISIONE E MAESTRIA',
+            about_title: 'Creatività senza limiti.',
+            about_desc: 'Sono ahmox, uno sviluppatore web appassionato che trasforma idee complesse in interfacce digitali semplici e accattivanti.',
+            skill1_title: 'Design Visivo',
+            skill1_desc: 'Creare identità visive che esprimono la forza del brand.',
+            skill2_title: 'Sviluppo Web',
+            skill2_desc: 'Scrivere codice pulito e veloce.',
+            portfolio_title: 'Portfolio',
+            portfolio_expand: 'CLICCA PER ESPANDERE',
+            portal_title: 'Il Portale',
+            portal_sub: 'Accedi ad Ahmox Cloud',
+            portal_id: 'ID',
+            portal_key: 'CHIAVE',
+            portal_btn: 'Accedi',
+            contact_tag: 'ARCHIVIO CONTATTI',
+            contact_heading: 'Pronto a<br>Costruire <span style="color:#3b82f6;">.</span>',
+        },
+    };
+ 
+    // RTL langs
+    const rtlLangs = ['ar'];
+ 
+    // ===== CURRENT STATE =====
+    let currentLang = 'ar';
+    let isDark = true;
+ 
+    // ===== THEME TOGGLE =====
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+ 
+    function setTheme(dark) {
+        isDark = dark;
+        if (dark) {
+            document.documentElement.classList.remove('light');
+            themeIcon.className = 'fas fa-moon';
+        } else {
+            document.documentElement.classList.add('light');
+            themeIcon.className = 'fas fa-sun';
         }
-
-        function openLightbox(element) {
-            lightboxImg.src = element.querySelector('img').src;
-            lightbox.style.display = 'flex';
+        localStorage.setItem('ahmox_theme', dark ? 'dark' : 'light');
+    }
+ 
+    themeToggle.addEventListener('click', () => setTheme(!isDark));
+ 
+    // ===== LANGUAGE =====
+    function applyTranslations(lang) {
+        const t = translations[lang] || translations['en'];
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (t[key] !== undefined) el.innerHTML = t[key];
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            if (t[key] !== undefined) el.placeholder = t[key];
+        });
+ 
+        // Direction
+        const isRTL = rtlLangs.includes(lang);
+        document.documentElement.setAttribute('lang', lang);
+        document.documentElement.setAttribute('dir', isRTL ? 'rtl' : 'ltr');
+ 
+        // Update current lang display
+        const btn = document.querySelector(`.lang-option[data-lang="${lang}"]`);
+        if (btn) {
+            document.getElementById('currentLang').textContent = btn.getAttribute('data-code');
+            document.querySelectorAll('.lang-option').forEach(o => o.classList.remove('active'));
+            btn.classList.add('active');
         }
-        function closeLightbox() { lightbox.style.display = 'none'; }
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+ 
+        localStorage.setItem('ahmox_lang', lang);
+        currentLang = lang;
+    }
+ 
+    // Lang dropdown toggle
+    const langBtn = document.getElementById('langBtn');
+    const langDropdown = document.getElementById('langDropdown');
+ 
+    langBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = langDropdown.classList.toggle('open');
+        document.getElementById('langChevron').style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+    });
+ 
+    document.querySelectorAll('.lang-option').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const lang = btn.getAttribute('data-lang');
+            applyTranslations(lang);
+            langDropdown.classList.remove('open');
+        });
+    });
+ 
+    document.addEventListener('click', () => {
+        langDropdown.classList.remove('open');
+        document.getElementById('langChevron').style.transform = 'rotate(0deg)';
+    });
+ 
+    // ===== INIT FROM LOCALSTORAGE =====
+    const savedTheme = localStorage.getItem('ahmox_theme');
+    const savedLang = localStorage.getItem('ahmox_lang');
+    setTheme(savedTheme !== 'light');
+    applyTranslations(savedLang || 'ar');
+ 
+    // ===== CURSOR =====
+    const cursor = document.getElementById('cursor');
+    const follower = document.getElementById('cursor-follower');
+ 
+    if (window.innerWidth > 768) {
+        let mouseX = 0, mouseY = 0;
+        let followerX = 0, followerY = 0;
+ 
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursor.style.left = mouseX + 'px';
+            cursor.style.top  = mouseY + 'px';
+        });
+ 
+        // Smooth follower with rAF
+        function animateFollower() {
+            followerX += (mouseX - followerX) * 0.18;
+            followerY += (mouseY - followerY) * 0.18;
+            follower.style.left = followerX + 'px';
+            follower.style.top  = followerY + 'px';
+            requestAnimationFrame(animateFollower);
+        }
+        animateFollower();
+ 
+        // Scale on hover
+        document.querySelectorAll('a, button, .work-card, .glass-bento, .lang-option, .theme-toggle, .lang-btn').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'translate(-50%,-50%) scale(2.5)';
+                cursor.style.background = 'var(--accent)';
+                follower.style.transform = 'translate(-50%,-50%) scale(0.4)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'translate(-50%,-50%) scale(1)';
+                cursor.style.background = 'var(--text)';
+                follower.style.transform = 'translate(-50%,-50%) scale(1)';
+            });
+        });
+ 
+        document.querySelectorAll('.glass-bento, .work-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width - 0.5;
+                const y = (e.clientY - rect.top) / rect.height - 0.5;
+                card.style.transform = `perspective(1000px) rotateX(${y * 7}deg) rotateY(${-x * 7}deg)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
+            });
+        });
+    }
+ 
+    // ===== LIGHTBOX =====
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+ 
+    function openLightbox(element) {
+        lightboxImg.src = element.querySelector('img').src;
+        lightbox.style.display = 'flex';
+    }
+    function closeLightbox() { lightbox.style.display = 'none'; }
+ 
+    // ===== REVEAL =====
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('active');
+        });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     </script>
-    <style>
-        :root { --accent: #898888; --bg: #050505; }
-
-        /* 1. السكرول الناعم وتثبيت الشاشة (Scroll Snap) */
-        html { 
-            scroll-behavior: smooth; 
-            background: var(--bg);
-            cursor: none; 
-        }
-
-        /* 2. تخصيص شكل السكرول بار (Custom Scrollbar) */
-        ::-webkit-scrollbar {
-            width: 5px; /* عرض نحيف جداً */
-        }
-        ::-webkit-scrollbar-track {
-            background: #000;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 10px;
-        }
-
-        /* تطبيق التثبيت على كل الأقسام */
-        section {
-            scroll-snap-align: start;
-            scroll-snap-stop: always;
-        }
-
-        body { 
-            font-family: 'Outfit', 'Cairo', sans-serif; 
-            color: white; 
-            overflow-x: hidden; 
-            width: 100%;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* Cursor */
-        #cursor { position: fixed; width: 8px; height: 8px; background: #fff; border-radius: 50%; pointer-events: none; z-index: 10000; }
-        #cursor-follower {
-            position: fixed; width: 35px; height: 35px; border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 50%; pointer-events: none; z-index: 9999;
-            transition: all 0.15s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-
-        /* Hero & Portfolio Effects */
-        .brand-name {
-            font-size: clamp(4rem, 20vw, 20rem);
-            font-weight: 900; line-height: 0.8; letter-spacing: -0.05em;
-            background: linear-gradient(to bottom, #fff 30%, #444 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-
-        .work-card {
-            position: relative; border-radius: 3rem; overflow: hidden;
-            background: #0a0a0a; border: 1px solid rgba(255,255,255,0.05);
-            transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
-            cursor: pointer;
-        }
-
-        .glass-bento {
-            background: rgba(255, 255, 255, 0.01);
-            backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        /* Reveal Animation */
-        .reveal { opacity: 0; transform: translateY(30px); transition: 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
-        .reveal.active { opacity: 1; transform: translateY(0); }
-
-        /* Mobile Fixes */
-        @media (max-width: 768px) {
-            html { cursor: auto; scroll-snap-type: none; } /* السكرول العادي أحسن للموبايل */
-            #cursor, #cursor-follower { display: none; }
-            .brand-name { font-size: 5rem; }
-        }
-    </style>
 </body>
 </html>
